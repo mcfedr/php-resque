@@ -62,6 +62,7 @@ class Resque_Job
 			'class'	=> $class,
 			'args'	=> array($args),
 			'id'	=> $id,
+			'queue_time' => microtime(true),
 		));
 
 		if($monitor) {
@@ -186,10 +187,10 @@ class Resque_Job
 	 */
 	public function perform()
 	{
-		$instance = $this->getInstance();
 		try {
 			Resque_Event::trigger('beforePerform', $this);
 
+			$instance = $this->getInstance();
 			if(method_exists($instance, 'setUp')) {
 				$instance->setUp();
 			}
