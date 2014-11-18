@@ -328,7 +328,7 @@ class Resque_Worker
 	{
 		$processTitle = 'resque-' . Resque::VERSION . ': ' . $status;
 		if(function_exists('cli_set_process_title')) {
-			cli_set_process_title($processTitle);
+			@cli_set_process_title($processTitle);
 		}
 		else if(function_exists('setproctitle')) {
 			setproctitle($processTitle);
