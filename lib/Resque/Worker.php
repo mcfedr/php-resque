@@ -1,4 +1,6 @@
 <?php
+declare(ticks = 1);
+
 /**
  * Resque worker that handles checking queues for jobs, fetching them
  * off the queues, running them and handling the result.
@@ -63,7 +65,7 @@ class Resque_Worker
     public function __construct($queues)
     {
         $this->logger = new Resque_Log();
-        
+
         if(!is_array($queues)) {
             $queues = array($queues);
         }
@@ -327,8 +329,8 @@ class Resque_Worker
 	private function updateProcLine($status)
 	{
 		$processTitle = 'resque-' . Resque::VERSION . ': ' . $status;
-		if(function_exists('cli_set_process_title')) {
-			@cli_set_process_title($processTitle);
+		if(function_exists('cli_set_process_title') && PHP_OS !== 'Darwin') {
+			cli_set_process_title($processTitle);
 		}
 		else if(function_exists('setproctitle')) {
 			setproctitle($processTitle);
@@ -349,7 +351,6 @@ class Resque_Worker
 			return;
 		}
 
-		declare(ticks = 1);
 		pcntl_signal(SIGTERM, array($this, 'shutDownNow'));
 		pcntl_signal(SIGINT, array($this, 'shutDownNow'));
 		pcntl_signal(SIGQUIT, array($this, 'shutdown'));
@@ -564,4 +565,3 @@ class Resque_Worker
 		$this->logger = $logger;
 	}
 }
-?>
