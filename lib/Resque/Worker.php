@@ -71,13 +71,8 @@ class Resque_Worker
         }
 
         $this->queues = $queues;
-        if(function_exists('gethostname')) {
-            $hostname = gethostname();
-        }
-        else {
-            $hostname = php_uname('n');
-        }
-        $this->hostname = $hostname;
+        $this->hostname = php_uname('n');
+
         $this->id = $this->hostname . ':'.getmypid() . ':' . implode(',', $this->queues);
     }
 
@@ -245,7 +240,7 @@ class Resque_Worker
 			$job->perform();
 		}
 		catch(Exception $e) {
-			$this->logger->log(Psr\Log\LogLevel::CRITICAL, '{job} has failed {stack}', array('job' => $job, 'stack' => $e->getMessage()));
+			$this->logger->log(Psr\Log\LogLevel::CRITICAL, '{job} has failed {stack}', array('job' => $job, 'stack' => $e));
 			$job->fail($e);
 			return;
 		}
